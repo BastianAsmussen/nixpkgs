@@ -2312,6 +2312,13 @@
     githubId = 576355;
     name = "Bas van Dijk";
   };
+  BastianAsmussen = {
+    name = "Bastian Asmussen";
+    email = "bastian@asmussen.tech";
+    github = "BastianAsmussen";
+    githubId = 76102128;
+    keys = [ { fingerprint = "3B11 7469 0893 85E7 16C2  7CD9 0FE5 A355 DBC9 2568"; } ];
+  };
   BatteredBunny = {
     email = "ayes2022@protonmail.com";
     github = "BatteredBunny";
