@@ -2,16 +2,14 @@
   stdenv,
   lib,
   fetchFromGitHub,
-  fetchpatch,
   buildMozillaMach,
   nixosTests,
-  python311,
 }:
 
 (
   (buildMozillaMach rec {
     pname = "floorp";
-    packageVersion = "11.17.7";
+    packageVersion = "11.19.1";
     applicationName = "Floorp";
     binaryName = "floorp";
     branding = "browser/branding/official";
@@ -19,14 +17,14 @@
     allowAddonSideload = true;
 
     # Must match the contents of `browser/config/version.txt` in the source tree
-    version = "128.2.0";
+    version = "128.4.0";
 
     src = fetchFromGitHub {
       owner = "Floorp-Projects";
       repo = "Floorp";
       fetchSubmodules = true;
       rev = "v${packageVersion}";
-      hash = "sha256-IAzPt696AWBEyfxR5U5/Isd6urPoi3fHshT+Fl+o/Bg=";
+      hash = "sha256-RFJ3aRbLwCf0qaluqImcF9+6frvJbw8QE3jBpxNxFjE=";
     };
 
     extraConfigureFlags = [
@@ -60,7 +58,9 @@
       license = lib.licenses.mpl20;
       mainProgram = "floorp";
     };
-    tests = [ nixosTests.floorp ];
+    tests = {
+      inherit (nixosTests) floorp;
+    };
   }).override
   {
     # Upstream build configuration can be found at

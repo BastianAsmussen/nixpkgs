@@ -84,7 +84,7 @@ lib.makeOverridable ({ # The kernel source tarball.
 # cgit) that are needed here should be included directly in Nixpkgs as
 # files.
 
-assert stdenv.isLinux;
+assert stdenv.hostPlatform.isLinux;
 
 let
   # Dirty hack to make sure that `version` & `src` have
@@ -108,6 +108,11 @@ let
 
   commonStructuredConfig = import ./common-config.nix {
     inherit lib stdenv version;
+    rustAvailable =
+      lib.any (lib.meta.platformMatch stdenv.hostPlatform) rustc.targetPlatforms
+      && lib.all (p: !lib.meta.platformMatch stdenv.hostPlatform p) rustc.badTargetPlatforms
+      # Known to be broken: https://lore.kernel.org/lkml/31885EDD-EF6D-4EF1-94CA-276BA7A340B7@kernel.org/T/
+      && !(stdenv.hostPlatform.isRiscV && stdenv.cc.isGNU);
 
     features = kernelFeatures; # Ensure we know of all extra patches, etc.
   };
@@ -230,7 +235,6 @@ kernel.overrideAttrs (finalAttrs: previousAttrs: {
   passthru = previousAttrs.passthru or { } // basicArgs // {
     features = kernelFeatures;
     inherit commonStructuredConfig structuredExtraConfig extraMakeFlags isZen isHardened isLibre;
-    isVanilla = !(isHardened || isLibre || isZen);
     isXen = lib.warn "The isXen attribute is deprecated. All Nixpkgs kernels that support it now have Xen enabled." true;
 
     # Adds dependencies needed to edit the config:
